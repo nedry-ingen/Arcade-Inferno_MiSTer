@@ -219,6 +219,7 @@ localparam CONF_STR = {
 	"H1P2O[78:74],CRT V-Shift,0,+1,+2,+3,+4,+5,+6,+7,+8,+9,+10,+11,+12,+13,+14,+15,-16,-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1;",
 	"-;",
 	"O[13],Aim+Fire,Off,On;",
+	"O[14],P1 Aim,1st Controller,2nd Joystick;",
 	"-;",
 	"P1,Pause options;",
 	"P1O[25],Pause when OSD is open,On,Off;",
@@ -370,12 +371,20 @@ always_comb begin
 	joy_aim_2[0] <= ((joyar_2[2] && joyar_2[0]) | joystick_1[10]);
 end
 
+// Dual joysticks for player 1 (same idea as Robotron's "Second Joystick"
+// control mode): the 1st controller moves, the 2nd joystick aims and its
+// fire button is the trigger, like the original cabinet's two sticks.
+// The 2nd stick goes through the same run mapping (D-Pad or left analog) and
+// player 2 is disabled while it is on.
+wire       twin_stick = status[14];
+wire [3:0] joy_aim_1_tw = joy_aim_1 | (twin_stick ? joy_run_2 : 4'd0);
+
 // These may look out of order, they are correct though (2,0,1,3)
 logic [3:0] btn_run_1, btn_aim_1, btn_run_2, btn_aim_2;
 assign btn_run_1 = {joy_run_1[2], joy_run_1[0], joy_run_1[1], joy_run_1[3]};
-assign btn_run_2 = {joy_run_2[2], joy_run_2[0], joy_run_2[1], joy_run_2[3]};
-assign btn_aim_1 = {joy_aim_1[2], joy_aim_1[0], joy_aim_1[1], joy_aim_1[3]};
-assign btn_aim_2 = {joy_aim_2[2], joy_aim_2[0], joy_aim_2[1], joy_aim_2[3]};
+assign btn_run_2 = twin_stick ? 4'd0 : {joy_run_2[2], joy_run_2[0], joy_run_2[1], joy_run_2[3]};
+assign btn_aim_1 = {joy_aim_1_tw[2], joy_aim_1_tw[0], joy_aim_1_tw[1], joy_aim_1_tw[3]};
+assign btn_aim_2 = twin_stick ? 4'd0 : {joy_aim_2[2], joy_aim_2[0], joy_aim_2[1], joy_aim_2[3]};
 
 logic btn_aimfire_1, btn_aimfire_2;
 always_ff @(posedge clk_12) begin
@@ -387,8 +396,8 @@ end
 
 logic aimfire, btn_trigger_1, btn_trigger_2, btn_start_1, btn_start_2, btn_coin, btn_pause;
 assign aimfire = status[13];
-assign btn_trigger_1 = aimfire ? btn_aimfire_1 : joystick_0[4];
-assign btn_trigger_2 = aimfire ? btn_aimfire_2 : joystick_1[4];
+assign btn_trigger_1 = aimfire ? btn_aimfire_1 : (joystick_0[4] | (twin_stick & joystick_1[4]));
+assign btn_trigger_2 = twin_stick ? 1'b0 : (aimfire ? btn_aimfire_2 : joystick_1[4]);
 assign btn_start_1   = joystick_0[5];
 assign btn_start_2   = joystick_1[5];
 assign btn_coin      = joystick_0[6]  | joystick_1[6];

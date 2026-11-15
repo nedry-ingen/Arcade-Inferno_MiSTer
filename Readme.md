@@ -47,6 +47,8 @@ This is a simulation model of the **Inferno** Williams 2nd Generation arcade har
 
 Inferno had dual joysticks, the right joystick was like a flight simulator's stick with a trigger on top to fire. This core is best played with dual joysticks (either on a modern gamepad or a custom joystick setup of your own which maps to dual analog). There is also the option to use the D-Pad and face buttons instead to Run and Aim respectively. The D-Pad and face buttons option does not require diagonal inputs.
 
+**P1 Aim: 2nd Joystick.** For a twin-stick panel (or two controllers), set *P1 Aim* to *2nd Joystick* in the OSD. Player 1 then moves with the 1st controller and aims with the 2nd joystick (D-Pad or left analog, same mapping as Run); the 2nd joystick's fire button (R) is the trigger. The 1st controller's aim inputs and trigger keep working too. Combine it with *Aim+Fire* to fire automatically while aiming. Player 2 is disabled while this option is on.
+
 ## Service Menu
 
 Like other Williams arcade hardware, Inferno had a peculiar system of "DIP" switches. See the manual in `doc/` for the original source of the information.
