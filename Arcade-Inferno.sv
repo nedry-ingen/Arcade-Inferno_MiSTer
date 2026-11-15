@@ -341,10 +341,11 @@ always_ff @(posedge clk_48) begin
 		joy_run_1[1] <= (joyal_1[3] && joyal_1[1]); // Up-Left
 		joy_run_1[0] <= (joyal_1[2] && joyal_1[0]); // Down-Right
 	end else begin
-		joy_run_1[3] <= joystick_0[3];
-		joy_run_1[2] <= joystick_0[2];
-		joy_run_1[1] <= joystick_0[1];
-		joy_run_1[0] <= joystick_0[0];
+		// Diagonals only: a single direction on its own does nothing
+		joy_run_1[3] <= (joystick_0[3] && joystick_0[0]); // Up+Right   -> Up-Right
+		joy_run_1[2] <= (joystick_0[2] && joystick_0[1]); // Down+Left  -> Down-Left
+		joy_run_1[1] <= (joystick_0[3] && joystick_0[1]); // Up+Left    -> Up-Left
+		joy_run_1[0] <= (joystick_0[2] && joystick_0[0]); // Down+Right -> Down-Right
 	end
 	if (joyal_2) begin
 		joy_run_2[3] <= (joyal_2[3] && joyal_2[0]);
@@ -352,10 +353,11 @@ always_ff @(posedge clk_48) begin
 		joy_run_2[1] <= (joyal_2[3] && joyal_2[1]);
 		joy_run_2[0] <= (joyal_2[2] && joyal_2[0]);
 	end else begin
-		joy_run_2[3] <= joystick_1[3];
-		joy_run_2[2] <= joystick_1[2];
-		joy_run_2[1] <= joystick_1[1];
-		joy_run_2[0] <= joystick_1[0];
+		// Diagonals only: a single direction on its own does nothing
+		joy_run_2[3] <= (joystick_1[3] && joystick_1[0]); // Up+Right   -> Up-Right
+		joy_run_2[2] <= (joystick_1[2] && joystick_1[1]); // Down+Left  -> Down-Left
+		joy_run_2[1] <= (joystick_1[3] && joystick_1[1]); // Up+Left    -> Up-Left
+		joy_run_2[0] <= (joystick_1[2] && joystick_1[0]); // Down+Right -> Down-Right
 	end
 end
 

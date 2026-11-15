@@ -36,18 +36,18 @@ This is a simulation model of the **Inferno** Williams 2nd Generation arcade har
 | Trigger         | Shoot your gun! | R                                              |
 | Coin            | Insert a coin!  | Select                                         |
 | Start           | Start the game! | Start                                          |
-| Run Upper-Left  | Move NorthWest  | L Analog Stick --> Up+Left    OR D-Pad Left    |
-| Run Upper-Right | Move NorthEast  | L Analog Stick --> Up+Right   OR D-Pad Up      |
-| Run Lower-Left  | Move SouthWest  | L Analog Stick --> Down+Left  OR D-Pad Down    |
-| Run Lower-Right | Move SouthEast  | L Analog Stick --> Down+Right OR D-Pad Right   |
+| Run Upper-Left  | Move NorthWest  | L Analog Stick --> Up+Left    OR D-Pad Up+Left    |
+| Run Upper-Right | Move NorthEast  | L Analog Stick --> Up+Right   OR D-Pad Up+Right   |
+| Run Lower-Left  | Move SouthWest  | L Analog Stick --> Down+Left  OR D-Pad Down+Left  |
+| Run Lower-Right | Move SouthEast  | L Analog Stick --> Down+Right OR D-Pad Down+Right |
 | Aim Upper-Left  | Aim NorthWest   | R Analog Stick --> Up+Left    OR Face Button Y |
 | Aim Upper-Right | Aim NorthEast   | R Analog Stick --> Up+Right   OR Face Button X |
 | Aim Lower-Left  | Aim SouthWest   | R Analog Stick --> Down+Left  OR Face Button B |
 | Aim Lower-Right | Aim SouthEast   | R Analog Stick --> Down+Right OR Face Button A |
 
-Inferno had dual joysticks, the right joystick was like a flight simulator's stick with a trigger on top to fire. This core is best played with dual joysticks (either on a modern gamepad or a custom joystick setup of your own which maps to dual analog). There is also the option to use the D-Pad and face buttons instead to Run and Aim respectively. The D-Pad and face buttons option does not require diagonal inputs.
+Inferno had dual joysticks, the right joystick was like a flight simulator's stick with a trigger on top to fire. This core is best played with dual joysticks (either on a modern gamepad or a custom joystick setup of your own which maps to dual analog). There is also the option to use the D-Pad and face buttons instead to Run and Aim respectively. Joystick and D-Pad inputs only act on the diagonals: Up, Down, Left or Right pushed on their own do nothing, for both Run and Aim and on both joysticks. The face buttons still aim directly, one button per diagonal.
 
-**P1 Aim: 2nd Joystick.** For a twin-stick panel (or two controllers), set *P1 Aim* to *2nd Joystick* in the OSD. Player 1 then moves with the 1st controller and aims with the 2nd joystick (D-Pad or left analog, same mapping as Run); the 2nd joystick's fire button (R) is the trigger. The 1st controller's aim inputs and trigger keep working too. Combine it with *Aim+Fire* to fire automatically while aiming. Player 2 is disabled while this option is on.
+**P1 Aim: 2nd Joystick.** For a twin-stick panel (or two controllers), set *P1 Aim* to *2nd Joystick* in the OSD. Player 1 then moves with the 1st controller and aims with the 2nd joystick (D-Pad or left analog, diagonals only, same mapping as Run); the 2nd joystick's fire button (R) is the trigger. The 1st controller's aim inputs and trigger keep working too. Combine it with *Aim+Fire* to fire automatically while aiming. Player 2 is disabled while this option is on.
 
 ## Service Menu
 
