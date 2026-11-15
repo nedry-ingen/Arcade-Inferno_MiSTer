@@ -211,6 +211,13 @@ localparam CONF_STR = {
 	"H0O[9:8],Aspect ratio,Original,Full Screen,[ARC1],[ARC2];",
 	"O[5:3],Scandoubler Fx,None,HQ2x,CRT 25%,CRT 50%,CRT 75%;",
 	"-;",
+	"P2,CRT Adjust;",
+	"P2O[73:70],CRT Frame H,0,-4,-8,-12,-16,-20,-24,+12,+8,+4;",
+	"P2O[101],CRT Adjust,Off,On;",
+	"H1P2O[100:96],CRT H-Size,0,+1,+2,+3,+4,+5,+6,+7,+8,+9,+10,+11,+12,+13,+14,+15,-16,-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1;",
+	"H1P2O[84:79],CRT H-Pos,0,+2,+4,+6,+8,+10,+12,+14,+16,+18,+20,+22,+24,+26,+28,+30,+32,+34,+36,+38,+40,+42,+44,+46,+48,-48,-46,-44,-42,-40,-38,-36,-34,-32,-30,-28,-26,-24,-22,-20,-18,-16,-14,-12,-10,-8,-6,-4,-2;",
+	"H1P2O[78:74],CRT V-Shift,0,+1,+2,+3,+4,+5,+6,+7,+8,+9,+10,+11,+12,+13,+14,+15,-16,-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1;",
+	"-;",
 	"O[13],Aim+Fire,Off,On;",
 	"-;",
 	"P1,Pause options;",
@@ -258,7 +265,7 @@ hps_io #(.CONF_STR(CONF_STR)) hps_io
 
 	.buttons(buttons),
 	.status(status),
-	.status_menumask({direct_video}),
+	.status_menumask({~status[101], direct_video}), // H1: CRT Adjust amounts
 
 	.forced_scandoubler(forced_scandoubler),
 	.gamma_bus(gamma_bus),
@@ -478,6 +485,10 @@ nvram #(10,3,4,2) nvram
 	.pause_cpu(pause_cpu_nvram)
 );
 
+// arcade_video outputs go to CRT Adjust instead of straight to VGA_*
+wire [7:0] av_r, av_g, av_b;
+wire       av_hs, av_vs, av_de, av_cen;
+
 arcade_video #(313,24,1) arcade_video
 (
 	.*,
@@ -488,7 +499,51 @@ arcade_video #(313,24,1) arcade_video
 	.VBlank(vblank),
 	.HSync(~hs),
 	.VSync(~vs),
-	.fx(status[5:3])
+	.fx(status[5:3]),
+
+	.CE_PIXEL(av_cen),
+	.VGA_R(av_r),
+	.VGA_G(av_g),
+	.VGA_B(av_b),
+	.VGA_HS(av_hs),
+	.VGA_VS(av_vs),
+	.VGA_DE(av_de)
+);
+
+// CRT Adjust (https://github.com/rmonic79/MiSTer-CRT-Adjust), core-side.
+// Native timing: 6 MHz pixel from clk_48 (8 clocks), 384 x 260 total,
+// 282 px active, roughly centred -> CONTENTSHIFT. Read period in eighths of
+// a clock: (64 + H-Size) / 8, so each H-Size step is 1/64 (~1.6%).
+crt_adjust_glue #(
+	.HTOTAL    (384),
+	.VTOTAL    (260),
+	.HPOS_MODE (1),
+	.RD_INC    (8),
+	.RD_BASE   (64),
+	.FRAME_LMAX(6)
+) crt_adjust_glue
+(
+	.clk        (clk_48),
+	.enable     (status[101]),
+	.st_hsize   (status[100:96]),
+	.st_hpos    (status[84:79]),
+	.st_vshift  (status[78:74]),
+	.st_frame   (status[73:70]),
+	.scandoubler(forced_scandoubler),
+	.ce_in      (av_cen),
+	.r_in       (av_r),
+	.g_in       (av_g),
+	.b_in       (av_b),
+	.hs_raw     (av_hs),
+	.vs_in      (av_vs),
+	.de_in      (av_de),
+	.ce_out     (CE_PIXEL),
+	.r_out      (VGA_R),
+	.g_out      (VGA_G),
+	.b_out      (VGA_B),
+	.hs_out     (VGA_HS),
+	.vs_out     (VGA_VS),
+	.de_out     (VGA_DE)
 );
 
 wire [7:0] audio;
